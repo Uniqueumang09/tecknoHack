@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Countdown Timer</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .timer-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 300px;
+    }
+
+    .timer-box {
+      border: 2px solid #333;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      font-size: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .time-buttons {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .time-buttons button {
+      margin: 5px;
+      padding: 8px 12px;
+      font-size: 16px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .time-buttons button:hover {
+      background-color: #555;
+    }
+
+    .time-buttons button.active {
+      background-color: #555;
+    }
+
+    .buttons {
+      margin-top: 20px;
+    }
+
+    .buttons button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .buttons button:hover {
+      background-color: #555;
+    }
+
+    .buttons button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <h1>Countdown Timer</h1>
+  <div class="timer-container">
+    <div class="timer-box">
+      <div class="timer" id="timer"></div>
+    </div>
+    <div class="time-buttons">
+      <button onclick="setCountdown(10)" id="btn10">10s</button>
+      <button onclick="setCountdown(50)" id="btn50">50s</button>
+      <button onclick="setCountdown(100)" id="btn100">100s</button>
+    </div>
+  </div>
+  <div class="buttons">
+    <button id="startBtn" onclick="startCountdown()">Start</button>
+    <button id="stopBtn" onclick="stopCountdown()">Stop</button>
+    <button id="resetBtn" onclick="resetCountdown()">Reset</button>
+  </div>
+
+  <script>
+    var countdown;
+    var secondsLeft;
+    var timerDisplay = document.getElementById('timer');
+    var startBtn = document.getElementById('startBtn');
+    var stopBtn = document.getElementById('stopBtn');
+    var resetBtn = document.getElementById('resetBtn');
+    var btn10 = document.getElementById('btn10');
+    var btn50 = document.getElementById('btn50');
+    var btn100 = document.getElementById('btn100');
+
+    function setCountdown(seconds) {
+      resetCountdown();
+      secondsLeft = seconds;
+      timerDisplay.innerHTML = secondsLeft;
+      setActiveButton(seconds);
+    }
+
+    function setActiveButton(seconds) {
+      btn10.classList.remove('active');
+      btn50.classList.remove('active');
+      btn100.classList.remove('active');
+
+      if (seconds === 10) {
+        btn10.classList.add('active');
+      } else if (seconds === 50) {
+        btn50.classList.add('active');
+      } else if (seconds === 100) {
+        btn100.classList.add('active');
+      }
+    }
+
+    function startCountdown() {
+      // Disable start button to prevent multiple instances of countdown
+      startBtn.disabled = true;
+
+      // Enable stop and reset buttons
+      stopBtn.disabled = false;
+      resetBtn.disabled = false;
+
+      countdown = setInterval(function() {
+        if (secondsLeft > 0) {
+          secondsLeft--;
+          timerDisplay.innerHTML = secondsLeft;
+        } else {
+          stopCountdown();
+          timerDisplay.innerHTML = "Time's up!";
+        }
+      }, 1000);
+    }
+
+    function stopCountdown() {
+      clearInterval(countdown);
+
+      // Enable start button and disable stop button
+      startBtn.disabled = false;
+      stopBtn.disabled = true;
+    }
+
+    function resetCountdown() {
+      clearInterval(countdown);
+      secondsLeft = 10; // Set the initial countdown time in seconds
+      timerDisplay.innerHTML = secondsLeft;
+
+      // Enable start button and disable stop button
+      startBtn.disabled = false;
+      stopBtn.disabled = true;
+
+      setActiveButton(10);
+    }
+
+    window.onload = function() {
+      secondsLeft = 10; // Set the initial countdown time in seconds
+      timerDisplay.innerHTML = secondsLeft;
+
+      // Disable stop and reset buttons on page load
+      stopBtn.disabled = true;
+      resetBtn.disabled = true;
+    };
+  </script>
+</body>
+</html>
+
+
+

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Currency Converter</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+
+    .converter {
+      max-width: 300px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+
+    .converter input[type="number"] {
+      width: 90%;
+      padding: 10px;
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    .converter select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .converter button {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background-color: #ff9800;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .converter button:hover {
+      background-color: #f57c00;
+    }
+
+    .converter .result {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .converter .error {
+      margin-top: 10px;
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="converter">
+    <input type="number" id="amount" placeholder="Enter amount">
+    <select id="fromCurrency">
+      <option value="USD">USD - United States Dollar</option>
+      <option value="EUR">EUR - Euro</option>
+      <option value="GBP">GBP - British Pound Sterling</option>
+      <option value="JPY">JPY - Japanese Yen</option>
+    </select>
+    <select id="toCurrency">
+      <option value="USD">USD - United States Dollar</option>
+      <option value="EUR">EUR - Euro</option>
+      <option value="GBP">GBP - British Pound Sterling</option>
+      <option value="JPY">JPY - Japanese Yen</option>
+    </select>
+    <button onclick="convertCurrency()">Convert</button>
+    <p class="result" id="result"></p>
+    <p class="error" id="error"></p>
+  </div>
+
+  <script>
+    function convertCurrency() {
+      var amount = document.getElementById('amount').value;
+      var fromCurrency = document.getElementById('fromCurrency').value;
+      var toCurrency = document.getElementById('toCurrency').value;
+      var resultElement = document.getElementById('result');
+      var errorElement = document.getElementById('error');
+
+      // Clear previous results and errors
+      resultElement.textContent = '';
+      errorElement.textContent = '';
+
+      // Check if amount is valid
+      if (!amount || amount <= 0) {
+        errorElement.textContent = 'Please enter a valid amount';
+        return;
+      }
+
+      // Make an API call to get the latest exchange rates
+      fetch('https://api.exchangerate-api.com/v4/latest/' + fromCurrency)
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(data) {
+          if (data.error) {
+            errorElement.textContent = data.error;
+          } else {
+            var rate = data.rates[toCurrency];
+            var convertedAmount = (amount * rate).toFixed(2);
+            resultElement.textContent = amount + ' ' + fromCurrency + ' = ' + convertedAmount + ' ' + toCurrency;
+          }
+        })
+        .catch(function(error) {
+          errorElement.textContent = 'An error occurred while fetching the exchange rates.';
+          console.log(error);
+        });
+    }
+  </script>
+</body>
+</html>
